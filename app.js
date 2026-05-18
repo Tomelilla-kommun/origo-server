@@ -13,12 +13,14 @@ var app = express();
 
 const limiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
-  max: 10000, // Limit each IP to 10000 requests per `window` (here, per 15 minutes)
+  max: 1000, // Limit each IP to 1000 requests per `window` (here, per 15 minutes)
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-  ...(conf['behindProxy']?.trimForwardedPorts && { keyGenerator: (req, res) => {
-    return req.ip.match(/\[?((\d+\.?){4}|((:?[a-z0-9]{0,8}){2,8}))\]?/i, "$1")[1]; // Client ip without port
-  }})
+  ...(conf['behindProxy']?.trimForwardedPorts && {
+    keyGenerator: (req, res) => {
+      return ipKeyGenerator(req.ip);
+    }
+  })
 })
 
 // apply rate limiter to all requests

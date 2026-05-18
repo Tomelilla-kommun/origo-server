@@ -143,15 +143,21 @@ async function doSearchAsyncCall(req, res, municipalityArray, urlParams) {
     promiseArray.push(
       rp(options)
       .then(function (result) {
-        var parameters = JSON.parse(result);
-        var newRes = [];
-        newRes = concatResult(parameters.features, municipality);
-        return newRes;
+        try {
+          var parameters = JSON.parse(result);
+          var newRes = [];
+          newRes = concatResult(parameters.features, municipality);
+          return newRes;
+        } catch (err) {
+          console.log('ERROR parsing result!');
+          console.log(err);
+          return [];
+        }
       })
       .catch(function (err) {
         console.log(err);
         console.log('ERROR doSearchAsyncCall!');
-        res.send({});
+        return []; // avoid double fallback response to client
       })
     )
   });
@@ -163,7 +169,9 @@ async function doSearchAsyncCall(req, res, municipalityArray, urlParams) {
     })
     .catch(function (err) {
         // If fail return empty array
-        res.send([]);
+        console.log('ERROR Promise.all doSearchAsyncCall!');
+        console.log(err);
+        returnValue = []; // avoid double fallback response to client
     })
     .finally(function () {
         // When all search has finished concat them to a single array of object Ids
