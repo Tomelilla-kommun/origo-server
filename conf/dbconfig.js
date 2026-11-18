@@ -1,12 +1,14 @@
 module.exports = {
   limit: 10,
   connectors: {
+    // Consider using database users with minimal permissions
       addressEstate: {
           mssql: {
             user: 'xxxxx',
             password: 'xxxxx',
             connectString: 'server name',
-            database: 'database name'
+            database: 'database name',
+            trustServerCertificate: false
           }
       },
       // Defines a default connector. If more than one connector is specified (only works for the search endpoint), then each search model must specify which connector to use.
@@ -23,7 +25,8 @@ module.exports = {
           //   user: 'xxxxx',
           //   password: 'xxxxx',
           //   connectString: 'server name',
-          //   database: 'database name'
+          //   database: 'database name',
+          //   trustServerCertificate: false
           // }
       },
       singlesearch: {

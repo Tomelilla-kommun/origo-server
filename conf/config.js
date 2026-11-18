@@ -16,7 +16,10 @@ module.exports = {
     scope: 'am_application_scope default'
   },
   proxy: {
-    proxyUrl: 'proxy?url='
+    // Whitelist for /proxy?url=. Protocol and host must match exactly, and the path must
+    // start with the given path. An empty list denies all requests.
+    // Example: 'https://karta.example.se/geoserver/'
+    allowedUrls: []
   },
   'lmproxy-ver': {
     url: "http://maps-ver.lantmateriet.se/",
@@ -41,12 +44,12 @@ module.exports = {
     scope: 'byggnad_direkt_v3_read'
   },
   lmelevation: {
-    url: "https://api.lantmateriet.se/distribution/produkter/hojd/v1/rest/api",
+    url: "https://api.lantmateriet.se/distribution/produkter/markhojd/v1",
     url_token: "https://apimanager.lantmateriet.se/oauth2/token",
     url_revoke: "https://apimanager.lantmateriet.se/oauth2/revoke",
     consumer_key: 'xxxxx',
     consumer_secret: 'xxxxx',
-    scope: 'am_application_scope default'
+    scope: 'markhojd_direkt_v1_read'
   },
   lmsearchplacename: {
     url: "https://api.lantmateriet.se/distribution/produkter/ortnamn/v2.2",
@@ -191,13 +194,21 @@ module.exports = {
     redirect_uri: 'https://karta.xxx.se',
     http_timeout: 10000,
     client_id: 'xxxxx',
-    client_secret: 'xxxxx',
+    client_secret: process.env.AUTH_CLIENT_SECRET,
     display_name: 'samaccountname',
     clients: {
       my_client: 'https://www.myclient.se',
       my_other_client: 'https://www.myotherclient.com'
     },
-    scope: 'openid'
+    scope: 'openid email roles',
+  //   ad_url: 'ldaps://ad.example.se',
+  //   ad_base_dn: 'dc=example,dc=se',
+  //   ad_username: 'svc-origoserver@example.se',
+  //   ad_password: process.env.AD_PASSWORD,
+  //   ad_ca_file: 'conf/ad-ca.pem',
+  //   ad_cache_minutes: 15,
+  //   ad_group: 'Origoserver-redigerare',
+  //   username_claim: 'sub'
   },
   ngpDetaljplan: {
     url_base: "https://api.lantmateriet.se/",
