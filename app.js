@@ -1,7 +1,7 @@
 var express = require('express');
 var path = require('path');
 var cors = require('cors');
-const rateLimit = require('express-rate-limit');
+const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
 
 var routes = require('./routes/index');
 const lmApiProxy = require('./routes/lmapiproxy');
@@ -18,7 +18,11 @@ const limiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   ...(conf['behindProxy']?.trimForwardedPorts && {
     keyGenerator: (req, res) => {
-      return ipKeyGenerator(req.ip);
+      // Strip forwarded ports while leaving bare IPv6 addresses intact.
+      const ip = req.ip
+        .replace(/^\[([^\]]+)\](?::\d+)?$/, '$1')
+        .replace(/^(\d{1,3}(?:\.\d{1,3}){3}):\d+$/, '$1');
+      return ipKeyGenerator(ip);
     }
   })
 })
